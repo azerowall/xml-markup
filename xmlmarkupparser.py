@@ -9,7 +9,8 @@ class Token:
         
         
     class EndTag:
-        pass
+        def __repr__(self):
+            return 'EndTag'
         
 
     class Data:
