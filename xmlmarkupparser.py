@@ -1,3 +1,4 @@
+import re
 
 class Token:
     class StartTag:
@@ -36,7 +37,6 @@ def is_run_has_style(run, style, ns):
         return True
     return False
 
-
 def parse_markup_tag(tag):
     if tag[:2] == '{{' and tag[-1] == '|':
         return Token.StartTag(tag[2:-1])
@@ -64,7 +64,6 @@ def literals(root, ns, style):
             for text in texts:
                 yield has_style, text.text
         yield False, '\n'
-
 
 def parse(root, ns, style):
     is_tag_prev = None
