@@ -26,6 +26,7 @@ def main():
     with open('out.xml', 'w') as f:
         writer = SimpleXmlWriter(f)
         for tok in tokens:
+            print(tok)
             writer.write(tok)
 
 

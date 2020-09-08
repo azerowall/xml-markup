@@ -43,16 +43,17 @@ def parse_markup_tag(tag):
     elif tag == '}}':
         return Token.EndTag()
     else:
-        return None
+        raise XmlMarkupError
+        
+def parse_markup_tags(tags_str):
+    for tag in re.findall(r'{{[^|]+\||}}', tags_str):
+        yield parse_markup_tag(tag)
 
-def make_token(is_tag, text):
+def make_tokens(is_tag, text):
     if is_tag:
-        token = parse_markup_tag(text)
-        if token is None:
-            raise XmlMarkupError
-        return token
+        yield from parse_markup_tags(text)
     else:
-        return Token.Data(text)
+        yield Token.Data(text)
 
 def literals(root, ns, style):
     paragraphs = root.iterfind('.//w:p', ns)
@@ -72,9 +73,9 @@ def parse(root, ns, style):
         if is_tag_prev is not None and is_tag_prev != is_tag:
             d = ''.join(data)
             data.clear()
-            yield make_token(is_tag_prev, d)
+            yield from make_tokens(is_tag_prev, d)
         data.append(text)
         is_tag_prev = is_tag
         
     if data:
-        yield make_token(is_tag_prev, ''.join(data))
+        yield from make_tokens(is_tag_prev, ''.join(data))
