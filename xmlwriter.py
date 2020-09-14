@@ -6,8 +6,13 @@ class SimpleXmlWriter:
         self._writer = writer
         self._stack = []
         self._data = None
+        self._is_first_write = True
         
     def write(self, tok):
+        if self._is_first_write:
+            self._writer.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+            self._is_first_write = False
+
         ttok = type(tok)
         if ttok is Token.StartTag:
             self._data = None
@@ -24,20 +29,3 @@ class SimpleXmlWriter:
         
     def close(self):
         self._writer.close()
-        
-        
-        
-        
-if __name__ == '__main__':
-    toks = [
-        Token.Data('blablabla'),
-        Token.StartTag('title'),
-        Token.Data('something interesting'),
-        Token.EndTag(),
-        Token.Data('another blabla'),
-    ]
-
-    with open('out.xml', 'w') as f:
-        writer = SimpleXmlWriter(f)
-        for tok in toks:
-            writer.write(tok)
