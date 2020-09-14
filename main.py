@@ -2,6 +2,7 @@
 
 import sys
 import argparse
+#import tempfile
 import zipfile
 import xml.etree.ElementTree as XMLTree
 
@@ -20,18 +21,19 @@ def main():
     parser = make_argparser()
     args = parser.parse_args(sys.argv[1:])
 
+    #tmpfile = tempfile.mkstemp()
     with zipfile.ZipFile(args.input, 'r') as zip_file:
-        #print('\n'.join(zip_file.namelist()))
-        #doc = zip_file.read('word/document.xml')
-        zip_file.extract('word/document.xml')
+        document_str = zip_file.read('word/document.xml')
+        #zip_file.extract('word/document.xml')
 
-    tree = XMLTree.parse('word/document.xml')
-    root = tree.getroot()
+    #tree = XMLTree.parse('word/document.xml')
+    #root = tree.getroot()
+    root = XMLTree.fromstring(document_str)
 
     ns = {'w':'http://schemas.openxmlformats.org/wordprocessingml/2006/main'}
 
     tokens = parse(root, ns, args.style)
-    with open('out.xml', 'w') as f:
+    with open(args.output, 'w') as f:
         writer = SimpleXmlWriter(f)
         for tok in tokens:
             writer.write(tok)
