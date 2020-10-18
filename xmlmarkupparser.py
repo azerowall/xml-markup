@@ -2,6 +2,7 @@ import re
 
 class Token:
     class StartTag:
+        __slots__ = ('name',)
         def __init__(self, name):
             self.name = name
         def __repr__(self):
@@ -12,6 +13,7 @@ class Token:
             return 'EndTag'
         
     class Data:
+        __slots__ = ('data',)
         def __init__(self, data):
             self.data = data
         def __repr__(self):
